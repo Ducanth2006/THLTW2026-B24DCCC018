@@ -43,8 +43,8 @@
 		component: './TodoList',
 	},
 	{
-    name: 'Quản lý sản phẩm',
-    icon: 'table',
+    name: 'Bài tập 01',
+    
     path: '/quan-ly-san-pham',
     component: './QuanLySanPham',
   },
