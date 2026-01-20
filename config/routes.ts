@@ -42,6 +42,12 @@
 		icon: 'OrderedListOutlined',
 		component: './TodoList',
 	},
+	{
+    name: 'Quản lý sản phẩm',
+    icon: 'table',
+    path: '/quan-ly-san-pham',
+    component: './QuanLySanPham',
+  },
 
 	// DANH MUC HE THONG
 	// {
