@@ -43,7 +43,7 @@
 		component: './TodoList',
 	},
 	{
-    name: 'Bài tập 01',
+    name: 'Bài tập 02',
     
     path: '/quan-ly-san-pham',
     component: './QuanLySanPham',
