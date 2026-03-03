@@ -308,6 +308,29 @@ export default function QuanLyTienDoHocTap() {
                 </Form>
               </div>
 
+              <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ddd' }}>
+                <h3>Tổng Kết Tháng</h3>
+                {(() => {
+                  let tongGioTatCa = 0;
+                  let tongTargetTatCa = 0;
+                  monHocList.forEach((mon) => {
+                    tongGioTatCa += tinhTongGioMonHoc(mon.tenMon) / 60;
+                    tongTargetTatCa += mucTieuThang[mon.tenMon] || 0;
+                  });
+                  const hoatDong = tongTargetTatCa > 0 ? Math.round((tongGioTatCa / tongTargetTatCa) * 100) : 0;
+                  const trangThaiTong = tongTargetTatCa === 0 ? 'Chưa đặt mục tiêu' : tongGioTatCa >= tongTargetTatCa ? 'Đã hoàn thành mục tiêu tháng!' : `Chưa đạt - còn ${(tongTargetTatCa - tongGioTatCa).toFixed(1)} giờ`;
+                  
+                  return (
+                    <div>
+                      <p>Tổng giờ học: {tongGioTatCa.toFixed(1)} / {tongTargetTatCa} giờ ({hoatDong}%)</p>
+                      <p style={{ fontSize: '16px', fontWeight: 'bold', color: tongGioTatCa >= tongTargetTatCa ? 'green' : 'red' }}>
+                        {trangThaiTong}
+                      </p>
+                    </div>
+                  );
+                })()}
+              </div>
+
               <div>
                 <h3>Báo Cáo Tiến Độ</h3>
                 {monHocList.map((mon) => {
