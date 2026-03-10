@@ -36,11 +36,24 @@
 		component: './RandomUser',
 		icon: 'ArrowsAltOutlined',
 	},
+
+	{
+		path: '/oantuti',
+		name: 'OanTuTi',
+		component: './OanTuTi',
+		icon: 'PaperClipOutlined',
+	},
 	{
 		path: '/todo-list',
 		name: 'TodoList',
 		icon: 'OrderedListOutlined',
 		component: './TodoList',
+	},
+	{
+		path: '/question-manager',
+		name: 'Quản lý câu hỏi',
+		icon: 'FormOutlined',
+		component: './QuestionManager',
 	},
 
 	// DANH MUC HE THONG
