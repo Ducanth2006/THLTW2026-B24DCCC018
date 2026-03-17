@@ -17,8 +17,8 @@ body {
 }
 
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background:white;
+  color: black;
   padding: 30px 20px;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -55,12 +55,12 @@ body {
 }
 
 .nav-btn:hover {
-  color: #667eea;
+  color:black;
 }
 
 .nav-btn.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color:black;
+  border-bottom-color:black;
 }
 
 .app-content {
@@ -84,7 +84,7 @@ body {
 .dashboard {
   background: white;
   padding: 30px;
-  border-radius: 8px;
+  
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -112,7 +112,7 @@ body {
 .form-group textarea {
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  
   font-size: 14px;
   font-family: inherit;
 }
@@ -121,7 +121,7 @@ body {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color:black;
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
@@ -156,7 +156,7 @@ body {
 .btn-action {
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -164,7 +164,7 @@ body {
 }
 
 .btn-submit {
-  background-color: #667eea;
+  background-color:black;
   color: white;
   width: 100%;
 }
@@ -233,7 +233,7 @@ body {
 .error-message,
 .success-message {
   padding: 15px;
-  border-radius: 4px;
+  
   margin-bottom: 20px;
   font-size: 14px;
 }
@@ -287,13 +287,13 @@ body {
   color: #333;
   font-size: 18px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid white;
 }
 
 .admin-form {
   background-color: #f9f9f9;
   padding: 20px;
-  border-radius: 4px;
+  
   margin-bottom: 20px;
 }
 
@@ -305,10 +305,10 @@ body {
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background:white;
+  color: black;
   padding: 20px;
-  border-radius: 8px;
+  
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -352,21 +352,21 @@ body {
   padding: 8px 16px;
   border: 2px solid #ddd;
   background-color: white;
-  border-radius: 20px;
+  
   cursor: pointer;
   font-size: 13px;
   transition: all 0.3s;
 }
 
 .filter-btn:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color:black;
+  color:black;
 }
 
 .filter-btn.active {
-  background-color: #667eea;
+  background-color:black;
   color: white;
-  border-color: #667eea;
+  border-color:black;
 }
 
 .no-data {
@@ -384,7 +384,7 @@ body {
 
 .appointment-card {
   border: 1px solid #ddd;
-  border-radius: 8px;
+  
   padding: 20px;
   background-color: #fafafa;
 }
@@ -425,17 +425,17 @@ body {
 
 .status-approved {
   background-color: #17a2b8;
-  color: white;
+  color: black;
 }
 
 .status-completed {
   background-color: #28a745;
-  color: white;
+  color: black;
 }
 
 .status-cancelled {
   background-color: #dc3545;
-  color: white;
+  color: black;
 }
 
 .apt-details-table {
@@ -471,7 +471,7 @@ body {
   gap: 10px;
   background-color: white;
   padding: 15px;
-  border-radius: 4px;
+  
   border: 1px solid #ddd;
 }
 
@@ -479,7 +479,7 @@ body {
 .rating-section textarea {
   padding: 8px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  
   font-size: 13px;
   font-family: inherit;
 }
@@ -487,14 +487,14 @@ body {
 .rating-display {
   background-color: white;
   padding: 12px;
-  border-radius: 4px;
+  
   border: 1px solid #ddd;
   font-size: 13px;
 }
 
 .rating-display strong {
   display: block;
-  color: #667eea;
+  color:black;
   margin-bottom: 8px;
 }
 
@@ -504,63 +504,3 @@ body {
   font-style: italic;
 }
 
-@media (max-width: 768px) {
-  .app-header h1 {
-    font-size: 22px;
-  }
-
-  .app-nav {
-    flex-wrap: wrap;
-    padding: 0 10px;
-  }
-
-  .nav-btn {
-    padding: 12px 16px;
-    font-size: 13px;
-  }
-
-  .app-content {
-    padding: 20px 10px;
-  }
-
-  .booking-form,
-  .admin-panel,
-  .dashboard {
-    padding: 20px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .filter-buttons {
-    gap: 8px;
-  }
-
-  .filter-btn {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
-
-  .apt-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .apt-status {
-    align-self: flex-start;
-  }
-
-  .apt-actions {
-    gap: 5px;
-  }
-
-  .data-table {
-    font-size: 12px;
-  }
-
-  .data-table th,
-  .data-table td {
-    padding: 8px;
-  }
-}

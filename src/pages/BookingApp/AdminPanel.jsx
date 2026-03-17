@@ -1,161 +1,161 @@
 import React, { useState, useEffect } from 'react';
 import { loadEmployees, saveEmployees, loadServices, saveServices, formatCurrency } from './data';
 
-export default function AdminPanel() {
-  const [employees, setEmployees] = useState([]);
-  const [services, setServices] = useState([]);
-  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
-  const [showServiceForm, setShowServiceForm] = useState(false);
-  const [editingEmployee, setEditingEmployee] = useState(null);
-  const [editingService, setEditingService] = useState(null);
+export default function BangQuanLy() {
+  const [danhSachNguoiLam, setDanhSachNguoiLam] = useState([]);
+  const [danhSachMon, setDanhSachMon] = useState([]);
+  const [hienOVanTayNhanVien, setHienOVanTayNhanVien] = useState(false);
+  const [hienOVanTayDichVu, setHienOVanTayDichVu] = useState(false);
+  const [dangSuaNguoiLam, setDangSuaNguoiLam] = useState(null);
+  const [dangSuaMon, setDangSuaMon] = useState(null);
 
-  const [empName, setEmpName] = useState('');
-  const [empSpecialty, setEmpSpecialty] = useState('');
-  const [empMaxCustomers, setEmpMaxCustomers] = useState('5');
-  const [empWorkDays, setEmpWorkDays] = useState([1, 2, 3, 4, 5]);
+  const [tenNguoi, setTenNguoi] = useState('');
+  const [ngheNghiep, setNgheNghiep] = useState('');
+  const [soKhachMax, setSoKhachMax] = useState('5');
+  const [lichLamViec, setLichLamViec] = useState([1, 2, 3, 4, 5]);
 
-  const [srvName, setSrvName] = useState('');
-  const [srvDuration, setSrvDuration] = useState('60');
-  const [srvPrice, setSrvPrice] = useState('');
+  const [tenMon, setTenMon] = useState('');
+  const [thoiGianLam, setThoiGianLam] = useState('60');
+  const [giaTien, setGiaTien] = useState('');
 
   useEffect(() => {
-    setEmployees(loadEmployees());
-    setServices(loadServices());
+    setDanhSachNguoiLam(loadEmployees());
+    setDanhSachMon(loadServices());
   }, []);
 
-  const handleAddOrEditEmployee = (e) => {
+  const luuHoacSuaNguoiLam = (e) => {
     e.preventDefault();
     
-    if (!empName.trim() || !empSpecialty.trim() || !empMaxCustomers) {
+    if (!tenNguoi.trim() || !ngheNghiep.trim() || !soKhachMax) {
       alert('Vui lòng điền đầy đủ thông tin nhân viên');
       return;
     }
 
-    const maxCustomers = parseInt(empMaxCustomers);
-    if (maxCustomers < 1) {
+    const soKhach = parseInt(soKhachMax);
+    if (soKhach < 1) {
       alert('Số khách tối đa phải >= 1');
       return;
     }
 
-    if (editingEmployee) {
-      const updated = employees.map(e =>
-        e.id === editingEmployee.id
-          ? { ...e, name: empName.trim(), specialty: empSpecialty.trim(), maxCustomersPerDay: maxCustomers, workDays: empWorkDays }
-          : e
+    if (dangSuaNguoiLam) {
+      const daCapNhat = danhSachNguoiLam.map(n =>
+        n.id === dangSuaNguoiLam.id
+          ? { ...n, name: tenNguoi.trim(), specialty: ngheNghiep.trim(), maxCustomersPerDay: soKhach, workDays: lichLamViec }
+          : n
       );
-      setEmployees(updated);
-      saveEmployees(updated);
-      setEditingEmployee(null);
+      setDanhSachNguoiLam(daCapNhat);
+      saveEmployees(daCapNhat);
+      setDangSuaNguoiLam(null);
     } else {
-      const newEmployee = {
-        id: Math.max(...employees.map(e => e.id), 0) + 1,
-        name: empName.trim(),
-        specialty: empSpecialty.trim(),
-        maxCustomersPerDay: maxCustomers,
-        workDays: empWorkDays
+      const nguoiMoi = {
+        id: Math.max(...danhSachNguoiLam.map(n => n.id), 0) + 1,
+        name: tenNguoi.trim(),
+        specialty: ngheNghiep.trim(),
+        maxCustomersPerDay: soKhach,
+        workDays: lichLamViec
       };
-      const updated = [...employees, newEmployee];
-      setEmployees(updated);
-      saveEmployees(updated);
+      const daCapNhat = [...danhSachNguoiLam, nguoiMoi];
+      setDanhSachNguoiLam(daCapNhat);
+      saveEmployees(daCapNhat);
     }
 
-    setEmpName('');
-    setEmpSpecialty('');
-    setEmpMaxCustomers('5');
-    setEmpWorkDays([1, 2, 3, 4, 5]);
-    setShowEmployeeForm(false);
+    
+    setNgheNghiep('');
+    setSoKhachMax('5');
+    setLichLamViec([1, 2, 3, 4, 5]);
+    setHienOVanTayNhanVien(false);
   };
 
-  const handleDeleteEmployee = (id) => {
+  const bamXoaNguoiLam = (id) => {
     if (window.confirm('Bạn chắc chắn muốn xóa nhân viên này?')) {
-      const updated = employees.filter(e => e.id !== id);
-      setEmployees(updated);
-      saveEmployees(updated);
+      const conLai = danhSachNguoiLam.filter(n => n.id !== id);
+      setDanhSachNguoiLam(conLai);
+      saveEmployees(conLai);
     }
   };
 
-  const handleEditEmployee = (employee) => {
-    setEmpName(employee.name);
-    setEmpSpecialty(employee.specialty);
-    setEmpMaxCustomers(String(employee.maxCustomersPerDay));
-    setEmpWorkDays([...employee.workDays]);
-    setEditingEmployee(employee);
-    setShowEmployeeForm(true);
+  const moFormSuaNguoi = (nguoi) => {
+    setTenNguoi(nguoi.name);
+    setNgheNghiep(nguoi.specialty);
+    setSoKhachMax(String(nguoi.maxCustomersPerDay));
+    setLichLamViec([...nguoi.workDays]);
+    setDangSuaNguoiLam(nguoi);
+    setHienOVanTayNhanVien(true);
   };
 
-  const handleAddOrEditService = (e) => {
+  const luuHoacSuaMon = (e) => {
     e.preventDefault();
 
-    if (!srvName.trim() || !srvDuration || !srvPrice) {
+    if (!tenMon.trim() || !thoiGianLam || !giaTien) {
       alert('Vui lòng điền đầy đủ thông tin dịch vụ');
       return;
     }
 
-    const duration = parseInt(srvDuration);
-    const price = parseInt(srvPrice);
+    const thoiGian = parseInt(thoiGianLam);
+    const gia = parseInt(giaTien);
 
-    if (duration < 15) {
+    if (thoiGian < 15) {
       alert('Thời lượng tối thiểu 15 phút');
       return;
     }
 
-    if (price < 0) {
+    if (gia < 0) {
       alert('Giá không hợp lệ');
       return;
     }
 
-    if (editingService) {
-      const updated = services.map(s =>
-        s.id === editingService.id
-          ? { ...s, name: srvName.trim(), duration, price }
-          : s
+    if (dangSuaMon) {
+      const daCapNhat = danhSachMon.map(m =>
+        m.id == dangSuaMon.id
+          ? { ...m, name: tenMon.trim(), duration: thoiGian, price: gia }
+          : m
       );
-      setServices(updated);
-      saveServices(updated);
-      setEditingService(null);
+      setDanhSachMon(daCapNhat);
+      saveServices(daCapNhat);
+      setDangSuaMon(null);
     } else {
-      const newService = {
-        id: Math.max(...services.map(s => s.id), 0) + 1,
-        name: srvName.trim(),
-        duration,
-        price
+      const monMoi = {
+        id: Math.max(...danhSachMon.map(m => m.id), 0) + 1,
+        name: tenMon.trim(),
+        duration: thoiGian,
+        price: gia
       };
-      const updated = [...services, newService];
-      setServices(updated);
-      saveServices(updated);
+      const daCapNhat = [...danhSachMon, monMoi];
+      setDanhSachMon(daCapNhat);
+      saveServices(daCapNhat);
     }
 
-    setSrvName('');
-    setSrvDuration('60');
-    setSrvPrice('');
-    setShowServiceForm(false);
+    setTenMon('');
+    setThoiGianLam('60');
+    setGiaTien('');
+    setHienOVanTayDichVu(false);
   };
 
-  const handleDeleteService = (id) => {
+  const bamXoaMon = (id) => {
     if (window.confirm('Bạn chắc chắn muốn xóa dịch vụ này?')) {
-      const updated = services.filter(s => s.id !== id);
-      setServices(updated);
-      saveServices(updated);
+      const conLai = danhSachMon.filter(m => m.id != id);
+      setDanhSachMon(conLai);
+      saveServices(conLai);
     }
   };
 
-  const handleEditService = (service) => {
-    setSrvName(service.name);
-    setSrvDuration(String(service.duration));
-    setSrvPrice(String(service.price));
-    setEditingService(service);
-    setShowServiceForm(true);
+  const moFormSuaMon = (mon) => {
+    setTenMon(mon.name);
+    setThoiGianLam(String(mon.duration));
+    setGiaTien(String(mon.price));
+    setDangSuaMon(mon);
+    setHienOVanTayDichVu(true);
   };
 
-  const toggleWorkDay = (day) => {
-    if (empWorkDays.includes(day)) {
-      setEmpWorkDays(empWorkDays.filter(d => d !== day));
+  const chonNgayTruc = (ngay) => {
+    if (lichLamViec.includes(ngay)) {
+      setLichLamViec(lichLamViec.filter(n => n != ngay));
     } else {
-      setEmpWorkDays([...empWorkDays, day].sort());
+      setLichLamViec([...lichLamViec, ngay].sort());
     }
   };
 
-  const dayNames = ['CN', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7'];
+  const cacThuTrongTuan = ['CN', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7'];
 
   return (
     <div className="admin-panel">
@@ -164,24 +164,24 @@ export default function AdminPanel() {
       <div className="admin-section">
         <h3>Quản lý nhân viên</h3>
         <button className="btn-add" onClick={() => {
-          setEditingEmployee(null);
-          setEmpName('');
-          setEmpSpecialty('');
-          setEmpMaxCustomers('5');
-          setEmpWorkDays([1, 2, 3, 4, 5]);
-          setShowEmployeeForm(!showEmployeeForm);
+          setDangSuaNguoiLam(null);
+          setTenNguoi('');
+          setNgheNghiep('');
+          setSoKhachMax('5');
+          setLichLamViec([1, 2, 3, 4, 5]);
+          setHienOVanTayNhanVien(!hienOVanTayNhanVien);
         }}>
-          {showEmployeeForm ? 'Hủy' : '+ Thêm nhân viên'}
+          {hienOVanTayNhanVien ? 'Thôi không thêm nữa' : '+ Thêm người làm'}
         </button>
 
-        {showEmployeeForm && (
-          <form onSubmit={handleAddOrEditEmployee} className="admin-form">
+        {hienOVanTayNhanVien && (
+          <form onSubmit={luuHoacSuaNguoiLam} className="admin-form">
             <div className="form-group">
               <label>Tên nhân viên: *</label>
               <input
                 type="text"
-                value={empName}
-                onChange={(e) => setEmpName(e.target.value)}
+                value={tenNguoi}
+                onChange={(e) => setTenNguoi(e.target.value)}
                 placeholder="Nhập tên"
               />
             </div>
@@ -190,8 +190,8 @@ export default function AdminPanel() {
               <label>Chuyên môn: *</label>
               <input
                 type="text"
-                value={empSpecialty}
-                onChange={(e) => setEmpSpecialty(e.target.value)}
+                value={ngheNghiep}
+                onChange={(e) => setNgheNghiep(e.target.value)}
                 placeholder="Ví dụ: Dạy vẽ, Thiết kế"
               />
             </div>
@@ -200,8 +200,8 @@ export default function AdminPanel() {
               <label>Số khách tối đa/ngày: *</label>
               <input
                 type="number"
-                value={empMaxCustomers}
-                onChange={(e) => setEmpMaxCustomers(e.target.value)}
+                value={soKhachMax}
+                onChange={(e) => setSoKhachMax(e.target.value)}
                 min="1"
               />
             </div>
@@ -209,21 +209,21 @@ export default function AdminPanel() {
             <div className="form-group">
               <label>Lịch trực (chọn các ngày làm việc):</label>
               <div className="work-days">
-                {dayNames.map((name, index) => (
+                {cacThuTrongTuan.map((tenThu, index) => (
                   <label key={index}>
                     <input
                       type="checkbox"
-                      checked={empWorkDays.includes(index)}
-                      onChange={() => toggleWorkDay(index)}
+                      checked={lichLamViec.includes(index)}
+                      onChange={() => chonNgayTruc(index)}
                     />
-                    {name}
+                    {tenThu}
                   </label>
                 ))}
               </div>
             </div>
 
             <button type="submit" className="btn-submit">
-              {editingEmployee ? 'Cập nhật' : 'Thêm'}
+              {dangSuaNguoiLam ? 'Lưu thay đổi' : 'Thêm luôn'}
             </button>
           </form>
         )}
@@ -239,15 +239,15 @@ export default function AdminPanel() {
             </tr>
           </thead>
           <tbody>
-            {employees.map(emp => (
-              <tr key={emp.id}>
-                <td>{emp.name}</td>
-                <td>{emp.specialty}</td>
-                <td>{emp.maxCustomersPerDay}</td>
-                <td>{emp.workDays.map(d => dayNames[d]).join(', ')}</td>
+            {danhSachNguoiLam.map(nguoi => (
+              <tr key={nguoi.id}>
+                <td>{nguoi.name}</td>
+                <td>{nguoi.name}</td>
+                <td>{nguoi.maxCustomersPerDay}</td>
+                <td>{nguoi.workDays.map(d => cacThuTrongTuan[d]).join(', ')}</td>
                 <td>
-                  <button className="btn-edit" onClick={() => handleEditEmployee(emp)}>Sửa</button>
-                  <button className="btn-delete" onClick={() => handleDeleteEmployee(emp.id)}>Xóa</button>
+                  <button className="btn-edit" onClick={() => moFormSuaNguoi(nguoi)}>Sửa</button>
+                  <button className="btn-delete" onClick={() => bamXoaNguoiLam(nguoi.id)}>Xóa</button>
                 </td>
               </tr>
             ))}
@@ -258,23 +258,23 @@ export default function AdminPanel() {
       <div className="admin-section">
         <h3>Quản lý dịch vụ</h3>
         <button className="btn-add" onClick={() => {
-          setEditingService(null);
-          setSrvName('');
-          setSrvDuration('60');
-          setSrvPrice('');
-          setShowServiceForm(!showServiceForm);
+          setDangSuaMon(null);
+          setTenMon('');
+          setThoiGianLam('60');
+          setGiaTien('');
+          setHienOVanTayDichVu(!hienOVanTayDichVu);
         }}>
-          {showServiceForm ? 'Hủy' : '+ Thêm dịch vụ'}
+          {hienOVanTayDichVu ? 'Thôi không thêm nữa' : '+ Thêm món mới'}
         </button>
 
-        {showServiceForm && (
-          <form onSubmit={handleAddOrEditService} className="admin-form">
+        {hienOVanTayDichVu && (
+          <form onSubmit={luuHoacSuaMon} className="admin-form">
             <div className="form-group">
-              <label>Tên dịch vụ: *</label>
+              <label>Tên món: *</label>
               <input
                 type="text"
-                value={srvName}
-                onChange={(e) => setSrvName(e.target.value)}
+                value={tenMon}
+                onChange={(e) => setTenMon(e.target.value)}
                 placeholder="Nhập tên dịch vụ"
               />
             </div>
@@ -283,8 +283,8 @@ export default function AdminPanel() {
               <label>Thời lượng (phút): *</label>
               <input
                 type="number"
-                value={srvDuration}
-                onChange={(e) => setSrvDuration(e.target.value)}
+                value={thoiGianLam}
+                onChange={(e) => setThoiGianLam(e.target.value)}
                 min="15"
                 step="15"
               />
@@ -294,14 +294,14 @@ export default function AdminPanel() {
               <label>Giá (VND): *</label>
               <input
                 type="number"
-                value={srvPrice}
-                onChange={(e) => setSrvPrice(e.target.value)}
+                value={giaTien}
+                onChange={(e) => setGiaTien(e.target.value)}
                 min="0"
               />
             </div>
 
             <button type="submit" className="btn-submit">
-              {editingService ? 'Cập nhật' : 'Thêm'}
+              {dangSuaMon ? 'Lưu thay đổi' : 'Thêm luôn'}
             </button>
           </form>
         )}
@@ -309,21 +309,21 @@ export default function AdminPanel() {
         <table className="data-table">
           <thead>
             <tr>
-              <th>Tên dịch vụ</th>
+              <th>Tên món</th>
               <th>Thời lượng</th>
               <th>Giá</th>
               <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
-            {services.map(srv => (
-              <tr key={srv.id}>
-                <td>{srv.name}</td>
-                <td>{srv.duration} phút</td>
-                <td>{formatCurrency(srv.price)}</td>
+            {danhSachMon.map(mon => (
+              <tr key={mon.id}>
+                <td>{mon.name}</td>
+                <td>{mon.duration} phút</td>
+                <td>{formatCurrency(mon.price)}</td>
                 <td>
-                  <button className="btn-edit" onClick={() => handleEditService(srv)}>Sửa</button>
-                  <button className="btn-delete" onClick={() => handleDeleteService(srv.id)}>Xóa</button>
+                  <button className="btn-edit" onClick={() => moFormSuaMon(mon)}>Sửa</button>
+                  <button className="btn-delete" onClick={() => bamXoaMon(mon.id)}>Xóa</button>
                 </td>
               </tr>
             ))}
