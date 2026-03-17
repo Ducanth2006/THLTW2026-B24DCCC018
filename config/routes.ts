@@ -56,7 +56,12 @@
 	// 		},
 	// 	],
 	// },
-
+    {
+		path: '/booking-system',
+		name: 'Đặt lịch dịch vụ',
+		icon: 'ScheduleOutlined', // Hoặc CalendarOutlined
+		component: './BookingApp/App', // Đường dẫn tính từ thư mục src/pages
+	},
 	{
 		path: '/notification',
 		routes: [
