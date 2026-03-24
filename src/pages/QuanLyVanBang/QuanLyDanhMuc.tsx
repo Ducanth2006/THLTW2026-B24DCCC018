@@ -100,7 +100,6 @@ const QuanLyDanhMuc = () => {
 
   const moThemSo = () => {
     setDinhDangSo(null)
-    formSo.resetFields()
     setMoModalSo(true)
   }
 
@@ -152,7 +151,6 @@ const QuanLyDanhMuc = () => {
 
   const moThemQD = () => {
     setDinhDangQD(null)
-    formQD.resetFields()
     setMoModalQD(true)
   }
 
@@ -182,14 +180,8 @@ const QuanLyDanhMuc = () => {
             icon={<EditOutlined />}
             onClick={() => moSuaSo(record)}
           />
-          <Popconfirm
-            title="Xóa sổ này?"
-            onConfirm={() => xoaSo(record.maSo)}
-            okText="Có"
-            cancelText="Không"
-          >
+    
             <Button size="small" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
         </div>
       ),
     },

@@ -9,6 +9,7 @@ interface VanBang {
   hoTen: string
   ngaySinh: string
   maQD_FK: string
+  [key: string]: any // Cho phép chứa các trường động
 }
 
 interface QuyetDinh {
@@ -22,9 +23,11 @@ interface QuyetDinh {
 const TraCuu = () => {
   const [dsVanBang, setDsVanBang] = useState<VanBang[]>([])
   const [dsQD, setDsQD] = useState<QuyetDinh[]>([])
+  const [dsTruongDong, setDsTruongDong] = useState<any[]>([]) // Thêm state để kéo cấu hình về
   const [ketQuaTraCuu, setKetQuaTraCuu] = useState<VanBang[]>([])
   const [moModalChiTiet, setMoModalChiTiet] = useState(false)
   const [chiTietVB, setChiTietVB] = useState<VanBang | null>(null)
+  
   const [soHieu, setSoHieu] = useState('')
   const [soVaoSo, setSoVaoSo] = useState('')
   const [maSV, setMaSV] = useState('')
@@ -38,8 +41,11 @@ const TraCuu = () => {
   const layDuLieu = () => {
     const vb = localStorage.getItem('dsVanBang')
     const qd = localStorage.getItem('dsQD')
+    const truong = localStorage.getItem('dsTruongDong') // Kéo cấu hình trường động lên
+    
     if (vb) setDsVanBang(JSON.parse(vb))
     if (qd) setDsQD(JSON.parse(qd))
+    if (truong) setDsTruongDong(JSON.parse(truong))
   }
 
   const kiemTraDieuKien = () => {
@@ -66,26 +72,18 @@ const TraCuu = () => {
     const ketQua = []
     for (let i = 0; i < dsVanBang.length; i++) {
       const vb = dsVanBang[i]
-      let dapUng = 0
+      let thoaMan = true // Đổi thành logic AND (Phải đúng tất cả các trường đã nhập)
 
-      if (soHieu && vb.soHieu.includes(soHieu)) dapUng++
-      if (soVaoSo && vb.soVaoSo.toString() === soVaoSo) dapUng++
-      if (maSV && vb.maSV.includes(maSV)) dapUng++
-      if (hoTen && vb.hoTen.includes(hoTen)) dapUng++
-      if (ngaySinh && vb.ngaySinh === ngaySinh) dapUng++
+      if (soHieu && !vb.soHieu.includes(soHieu)) thoaMan = false
+      if (soVaoSo && vb.soVaoSo.toString() !== soVaoSo) thoaMan = false
+      if (maSV && !vb.maSV.includes(maSV)) thoaMan = false
+      if (hoTen && !vb.hoTen.includes(hoTen)) thoaMan = false
+      if (ngaySinh && vb.ngaySinh !== ngaySinh) thoaMan = false
 
-      let tongTruongDaInput = 0
-      if (soHieu) tongTruongDaInput++
-      if (soVaoSo) tongTruongDaInput++
-      if (maSV) tongTruongDaInput++
-      if (hoTen) tongTruongDaInput++
-      if (ngaySinh) tongTruongDaInput++
-
-      if (dapUng > 0) {
+      if (thoaMan) {
         ketQua.push(vb)
       }
     }
-
     setKetQuaTraCuu(ketQua)
   }
 
@@ -112,7 +110,7 @@ const TraCuu = () => {
       title: 'Hành Động',
       key: 'hanhDong',
       render: (text: any, record: VanBang) => (
-        <Button size="small" onClick={() => xemChiTiet(record)}>
+        <Button size="small" type="primary" onClick={() => xemChiTiet(record)}>
           Xem Chi Tiết
         </Button>
       ),
@@ -161,24 +159,19 @@ const TraCuu = () => {
       >
         {chiTietVB && (
           <div>
-            <p>
-              <strong>Số Hiệu:</strong> {chiTietVB.soHieu}
-            </p>
-            <p>
-              <strong>Số Vào Sổ:</strong> {chiTietVB.soVaoSo}
-            </p>
-            <p>
-              <strong>Mã SV:</strong> {chiTietVB.maSV}
-            </p>
-            <p>
-              <strong>Họ Tên:</strong> {chiTietVB.hoTen}
-            </p>
-            <p>
-              <strong>Ngày Sinh:</strong> {chiTietVB.ngaySinh}
-            </p>
-            <p>
-              <strong>Quyết Định:</strong> {chiTietVB.maQD_FK}
-            </p>
+            <p><strong>Số Hiệu:</strong> {chiTietVB.soHieu}</p>
+            <p><strong>Số Vào Sổ:</strong> {chiTietVB.soVaoSo}</p>
+            <p><strong>Mã SV:</strong> {chiTietVB.maSV}</p>
+            <p><strong>Họ Tên:</strong> {chiTietVB.hoTen}</p>
+            <p><strong>Ngày Sinh:</strong> {chiTietVB.ngaySinh}</p>
+            <p><strong>Quyết Định:</strong> {chiTietVB.maQD_FK}</p>
+            
+            
+            {dsTruongDong.map((truong) => (
+              <p key={truong.id}>
+                <strong>{truong.tenTruong}:</strong> {chiTietVB[`truongDong_${truong.id}`] || 'Không có dữ liệu'}
+              </p>
+            ))}
           </div>
         )}
       </Modal>

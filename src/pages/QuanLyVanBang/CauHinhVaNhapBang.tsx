@@ -115,7 +115,7 @@ const CauHinhVaNhapBang = () => {
       return
     }
 
-    const so = dsSo.find((s) => s.maSo === qd.maSo_FK)
+    const so = dsSo.find((s) => s.maSo == qd.maSo_FK)
     if (!so) {
       message.error('Sổ không tồn tại')
       return
@@ -188,14 +188,9 @@ const CauHinhVaNhapBang = () => {
               setMoModalTruong(true)
             }}
           />
-          <Popconfirm
-            title="Xóa trường này?"
-            onConfirm={() => xoaTruong(record.id)}
-            okText="Có"
-            cancelText="Không"
-          >
+        
             <Button size="small" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
+          
         </div>
       ),
     },
