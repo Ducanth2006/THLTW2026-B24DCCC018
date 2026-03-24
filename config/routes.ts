@@ -31,6 +31,12 @@
 		hideInMenu: true,
 	},
 	{
+        path: '/quan-ly-van-bang',
+        name: 'Quản Lý Văn Bằng',
+        icon: 'FileTextOutlined',
+        component: './QuanLyVanBang',
+      },
+	{
 		path: '/random-user',
 		name: 'RandomUser',
 		component: './RandomUser',
