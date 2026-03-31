@@ -37,6 +37,12 @@
 		icon: 'ArrowsAltOutlined',
 	},
 	{
+       path: '/quan-ly-hoat-dong',
+       name: 'Quản lý Câu lạc bộ',
+       icon: 'team',
+       component: './QuanLyHoatDong',
+    },
+	{
 		path: '/todo-list',
 		name: 'TodoList',
 		icon: 'OrderedListOutlined',
