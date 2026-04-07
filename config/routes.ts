@@ -42,6 +42,17 @@
 		icon: 'OrderedListOutlined',
 		component: './TodoList',
 	},
+	{
+        path: '/du-lich',
+        name: 'Quản Lý Du Lịch',
+        icon: 'GlobalOutlined',
+        routes: [
+            { path: '/du-lich/kham-pha', name: 'Khám Phá', component: './DuLich/KhamPha' },
+            { path: '/du-lich/lich-trinh', name: 'Lập Lịch Trình', component: './DuLich/LichTrinh' },
+            { path: '/du-lich/ngan-sach', name: 'Ngân Sách', component: './DuLich/NganSach' },
+            { path: '/du-lich/quan-tri', name: 'Quản Trị', component: './DuLich/QuanTri' },
+        ],
+    },
 
 	// DANH MUC HE THONG
 	// {
