@@ -43,6 +43,40 @@
 		component: './TodoList',
 	},
 
+	{
+		path: '/blog',
+		name: 'Blog',
+		icon: 'read',
+		routes: [
+			{
+				path: '/blog/trang-chu',
+				name: 'Trang chủ',
+				component: './Blog/TrangChu',
+			},
+			{
+				path: '/blog/chi-tiet/:id',
+				name: 'Chi tiết bài viết',
+				component: './Blog/ChiTiet',
+				hideInMenu: true,
+			},
+			{
+				path: '/blog/gioi-thieu',
+				name: 'Giới thiệu',
+				component: './Blog/GioiThieu',
+			},
+			{
+				path: '/blog/quan-ly-bai-viet',
+				name: 'Quản lý bài viết',
+				component: './Blog/QuanLyBaiViet',
+			},
+			{
+				path: '/blog/quan-ly-the',
+				name: 'Quản lý thẻ',
+				component: './Blog/QuanLyThe',
+			},
+		],
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',
