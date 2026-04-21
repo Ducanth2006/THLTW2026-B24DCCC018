@@ -42,25 +42,42 @@ const sampleContents = [
   '<p>Redux là thư viện quản lý state rất mạnh mẽ. Tuy nhiên, Redux truyền thống thường bị phàn nàn là quá nhiều boilerplate code. Redux Toolkit ra đời để giải quyết vấn đề này.</p><p>Với hàm <code>configureStore</code> và <code>createSlice</code>, bạn có thể thiết lập Redux store chỉ trong vài dòng code.</p>'
 ];
 
+// Hàm tạo slug đơn giản kiểu sinh viên hay làm
+const toSlug = (str: string) => {
+  return str.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/([^0-9a-z-\s])/g, '-')
+    .replace(/(\s+)/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
 let mockPosts = Array.from({ length: 25 }).map((_, i) => {
   const titleIdx = i % sampleTitles.length;
   const tagCount = Math.floor(Math.random() * 3) + 1; // 1 to 3 tags
   const tags = [...mockTags].sort(() => 0.5 - Math.random()).slice(0, tagCount);
+  const title = sampleTitles[titleIdx] + (i >= sampleTitles.length ? ` (Phần ${Math.floor(i / sampleTitles.length) + 1})` : '');
   
   return {
     id: `${i + 1}`,
-    title: sampleTitles[titleIdx] + (i >= sampleTitles.length ? ` (Phần ${Math.floor(i / sampleTitles.length) + 1})` : ''),
+    title: title,
+    slug: toSlug(title),
+    thumbnail: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png', // Ảnh demo của antd
     content: sampleContents[titleIdx],
     description: sampleDescriptions[titleIdx],
     tags: tags,
     author: ['Nguyễn Văn A', 'Trần Thị B', 'Lê Hoàng C', 'Phạm Minh D'][i % 4],
     viewCount: Math.floor(Math.random() * 5000) + 100,
+    status: i % 4 === 0 ? 'draft' : 'published', // Cứ 4 bài thì 1 bài nháp
     createdAt: new Date(Date.now() - (Math.random() * 30 * 86400000)).toISOString(),
   };
 });
 
-export async function getPosts(params: { page?: number; limit?: number; search?: string; tag?: string }) {
-  const { page = 1, limit = 9, search = '', tag = '' } = params;
+export async function getPosts(params: { page?: number; limit?: number; search?: string; tag?: string; status?: string }) {
+  // console.log("getPosts params:", params); // Thêm log kiểu sinh viên hay debug
+  const { page = 1, limit = 9, search = '', tag = '', status = '' } = params;
   let data = [...mockPosts];
 
   if (search) {
@@ -69,6 +86,12 @@ export async function getPosts(params: { page?: number; limit?: number; search?:
   if (tag) {
     data = data.filter(p => p.tags.includes(tag));
   }
+  if (status) {
+    data = data.filter(p => p.status === status);
+  }
+
+  // Mặc định trang chủ chỉ lấy bài published nếu không truyền status (hoặc xử lý ở UI)
+  // Nhưng để linh hoạt, mình cứ trả về theo yêu cầu của params
 
   const total = data.length;
   const start = (page - 1) * limit;
@@ -77,7 +100,7 @@ export async function getPosts(params: { page?: number; limit?: number; search?:
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({ data, total, success: true });
-    }, 500);
+    }, 400);
   });
 }
 
@@ -89,7 +112,7 @@ export async function getPostDetail(id: string) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({ data: post, success: !!post });
-    }, 300);
+    }, 200);
   });
 }
 
@@ -99,6 +122,8 @@ export async function createPost(data: any) {
     id: Date.now().toString(),
     viewCount: 0,
     createdAt: new Date().toISOString(),
+    // Nếu ko nhập ảnh thì lấy ảnh mặc định
+    thumbnail: data.thumbnail || 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
   };
   mockPosts.unshift(newPost);
   return { success: true, data: newPost };
@@ -119,15 +144,24 @@ export async function deletePost(id: string) {
 }
 
 export async function getTags() {
+  const tagData = mockTags.map(tag => {
+    return {
+      name: tag,
+      count: mockPosts.filter(p => p.tags.includes(tag)).length
+    }
+  });
+
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({ data: mockTags, success: true });
-    }, 200);
+      resolve({ data: tagData, success: true });
+    }, 300);
   });
 }
 
 export async function addTag(tag: string) {
-  mockTags.push(tag);
+  if (!mockTags.includes(tag)) {
+    mockTags.push(tag);
+  }
   return { success: true };
 }
 
