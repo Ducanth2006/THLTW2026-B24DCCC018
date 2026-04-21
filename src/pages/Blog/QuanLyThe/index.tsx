@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Table, Button, Space, Popconfirm, Modal, Form, Input, message, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { getTags, addTag, updateTag, deleteTag } from '@/services/Blog';
 
+type BlogTag = {
+  name: string;
+  count: number;
+};
+
 const QuanLyThe = () => {
-  const [data, setData] = useState<{ id: string; name: string }[]>([]);
+  const [data, setData] = useState<{ id: string; name: string; count: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [editingTag, setEditingTag] = useState<string | null>(null);
@@ -19,8 +24,13 @@ const QuanLyThe = () => {
     setLoading(true);
     const res: any = await getTags();
     if (res?.success) {
-      // Chuyển array string thành array object cho Table
-      setData(res.data.map((t: string) => ({ id: t, name: t })));
+      setData(
+        (res.data || []).map((tag: BlogTag) => ({
+          id: tag.name,
+          name: tag.name,
+          count: tag.count,
+        })),
+      );
     }
     setLoading(false);
   };
@@ -69,6 +79,13 @@ const QuanLyThe = () => {
       dataIndex: 'name',
       key: 'name',
       render: (t: string) => <Tag color="blue">{t}</Tag>,
+    },
+    {
+      title: 'Số bài viết',
+      dataIndex: 'count',
+      key: 'count',
+      width: 120,
+      align: 'center' as const,
     },
     {
       title: 'Thao tác',

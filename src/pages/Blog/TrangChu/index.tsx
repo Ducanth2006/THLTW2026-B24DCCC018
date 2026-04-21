@@ -1,15 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Card, Row, Col, Pagination, Input, Select, Tag, Spin, Typography } from 'antd';
 import { history } from 'umi';
 import { getPosts, getTags } from '@/services/Blog';
 
 const { Meta } = Card;
-const { Search } = Input;
-const { Title, Paragraph, Text } = Typography;
+const { Paragraph } = Typography;
+
+type BlogTag = {
+  name: string;
+  count: number;
+};
 
 const TrangChu = () => {
   const [posts, setPosts] = useState<any[]>([]);
-  const [tags, setTags] = useState<any[]>([]);
+  const [tags, setTags] = useState<BlogTag[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -28,13 +32,12 @@ const TrangChu = () => {
 
   const fetchTags = async () => {
     const res: any = await getTags();
-    if (res?.success) setTags(res.data || []);
+    if (res?.success) setTags(res.data);
   };
 
   const fetchPosts = async () => {
     setLoading(true);
-    // Trang chủ chỉ hiện bài đã đăng
-    const res: any = await getPosts({ page, limit: 9, search, tag, status: 'published' });
+    const res: any = await getPosts({ page, limit: 9, search, tag });
     if (res?.success) {
       setPosts(res.data);
       setTotal(res.total);
@@ -47,14 +50,8 @@ const TrangChu = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setSearch(val);
-      setPage(1); // Reset về trang 1 khi search
-    }, 300); // debounce 300ms
-  };
-
-  const handleTagClick = (e: React.MouseEvent, clickedTag: string) => {
-    e.stopPropagation(); // Ngăn sự kiện click lan ra Card (tránh redirect)
-    setTag(clickedTag);
-    setPage(1);
+      setPage(1);
+    }, 300);
   };
 
   return (
@@ -72,14 +69,15 @@ const TrangChu = () => {
             style={{ width: '100%' }} 
             placeholder="Lọc theo thẻ (Tag)" 
             allowClear
-            value={tag || undefined}
             onChange={(val) => {
               setTag(val);
               setPage(1);
             }}
           >
-            {tags.map(t => (
-              <Select.Option key={t.name} value={t.name}>{t.name} ({t.count})</Select.Option>
+            {tags.map(tagItem => (
+              <Select.Option key={tagItem.name} value={tagItem.name}>
+                {tagItem.name}
+              </Select.Option>
             ))}
           </Select>
         </Col>
@@ -92,7 +90,7 @@ const TrangChu = () => {
               <Card
                 hoverable
                 onClick={() => history.push(`/blog/chi-tiet/${post.id}`)}
-                cover={<img alt={post.title} src={post.thumbnail} style={{ height: 200, objectFit: 'cover' }} />}
+                cover={<div style={{ height: 150, background: '#f0f2f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Ảnh minh họa</div>}
               >
                 <Meta 
                   title={post.title} 
@@ -100,24 +98,10 @@ const TrangChu = () => {
                     <div>
                       <Paragraph ellipsis={{ rows: 2 }}>{post.description}</Paragraph>
                       <div style={{ marginTop: 10 }}>
-                        {post.tags?.map((t: string) => (
-                          <Tag 
-                            color={tag === t ? "magenta" : "blue"} 
-                            key={t} 
-                            onClick={(e) => handleTagClick(e, t)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            {t}
-                          </Tag>
-                        ))}
+                        {post.tags?.map((t: string) => <Tag color="blue" key={t}>{t}</Tag>)}
                       </div>
-                      <div style={{ marginTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          Bởi <b>{post.author}</b>
-                        </Text>
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          👀 {post.viewCount} • {new Date(post.createdAt).toLocaleDateString()}
-                        </Text>
+                      <div style={{ marginTop: 10, fontSize: 12, color: 'gray' }}>
+                        👀 {post.viewCount} views • {new Date(post.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                   } 
@@ -125,11 +109,6 @@ const TrangChu = () => {
               </Card>
             </Col>
           ))}
-          {posts.length === 0 && !loading && (
-            <div style={{ width: '100%', textAlign: 'center', marginTop: 50, color: 'gray' }}>
-              Không tìm thấy bài viết nào!
-            </div>
-          )}
         </Row>
       </Spin>
 

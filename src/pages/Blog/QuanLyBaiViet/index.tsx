@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Table, Button, Space, Popconfirm, Drawer, Form, Input, Select, message, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { getPosts, createPost, updatePost, deletePost, getTags } from '@/services/Blog';
 import TinyEditor from '@/components/TinyEditor';
 
+type BlogTag = {
+  name: string;
+  count: number;
+};
+
 const QuanLyBaiViet = () => {
   const [data, setData] = useState<any[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<BlogTag[]>([]);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -143,7 +148,11 @@ const QuanLyBaiViet = () => {
           </Form.Item>
           <Form.Item name="tags" label="Thẻ">
             <Select mode="tags" style={{ width: '100%' }}>
-              {tags.map(t => <Select.Option key={t} value={t}>{t}</Select.Option>)}
+              {tags.map(tag => (
+                <Select.Option key={tag.name} value={tag.name}>
+                  {tag.name}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item name="content" label="Nội dung" rules={[{ required: true, message: 'Vui lòng nhập nội dung' }]}>
