@@ -120,8 +120,10 @@ export async function createPost(data: any) {
   const newPost = {
     ...data,
     id: Date.now().toString(),
+    slug: data.slug || toSlug(data.title || ''),
     viewCount: 0,
     createdAt: new Date().toISOString(),
+    status: data.status || 'draft',
     // Nếu ko nhập ảnh thì lấy ảnh mặc định
     thumbnail: data.thumbnail || 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
   };

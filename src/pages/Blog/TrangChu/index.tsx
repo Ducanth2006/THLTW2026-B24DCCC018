@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, Row, Col, Pagination, Input, Select, Tag, Spin, Typography } from 'antd';
 import { history } from 'umi';
 import { getPosts, getTags } from '@/services/Blog';
@@ -19,7 +19,7 @@ const TrangChu = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [tag, setTag] = useState('');
-  
+
   const timeoutRef = useRef<any>(null);
 
   useEffect(() => {
@@ -46,10 +46,10 @@ const TrangChu = () => {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+    const value = e.target.value;
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      setSearch(val);
+      setSearch(value);
       setPage(1);
     }, 300);
   };
@@ -58,25 +58,22 @@ const TrangChu = () => {
     <Card title="Blog Cá Nhân">
       <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
         <Col span={12}>
-          <Input 
-            placeholder="Tìm kiếm bài viết..." 
-            onChange={handleSearch} 
-            allowClear 
-          />
+          <Input placeholder="Tìm kiếm bài viết..." onChange={handleSearch} allowClear />
         </Col>
         <Col span={12}>
-          <Select 
-            style={{ width: '100%' }} 
-            placeholder="Lọc theo thẻ (Tag)" 
+          <Select
+            style={{ width: '100%' }}
+            placeholder="Lọc theo thẻ"
             allowClear
-            onChange={(val) => {
-              setTag(val);
+            value={tag || undefined}
+            onChange={(value) => {
+              setTag(value || '');
               setPage(1);
             }}
           >
-            {tags.map(tagItem => (
-              <Select.Option key={tagItem.name} value={tagItem.name}>
-                {tagItem.name}
+            {tags.map((item) => (
+              <Select.Option key={item.name} value={item.name}>
+                {item.name} ({item.count})
               </Select.Option>
             ))}
           </Select>
@@ -85,26 +82,48 @@ const TrangChu = () => {
 
       <Spin spinning={loading}>
         <Row gutter={[16, 16]}>
-          {posts.map(post => (
+          {posts.map((post) => (
             <Col xs={24} sm={12} md={8} key={post.id}>
               <Card
                 hoverable
                 onClick={() => history.push(`/blog/chi-tiet/${post.id}`)}
-                cover={<div style={{ height: 150, background: '#f0f2f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Ảnh minh họa</div>}
+                cover={
+                  <img
+                    src={post.thumbnail}
+                    alt={post.title}
+                    style={{ height: 180, objectFit: 'cover' }}
+                  />
+                }
               >
-                <Meta 
-                  title={post.title} 
+                <Meta
+                  title={post.title}
                   description={
                     <div>
                       <Paragraph ellipsis={{ rows: 2 }}>{post.description}</Paragraph>
+                      <div style={{ fontSize: 13, color: '#666', marginBottom: 8 }}>
+                        Tác giả: {post.author}
+                      </div>
                       <div style={{ marginTop: 10 }}>
-                        {post.tags?.map((t: string) => <Tag color="blue" key={t}>{t}</Tag>)}
+                        {post.tags?.map((item: string) => (
+                          <Tag
+                            color="blue"
+                            key={item}
+                            style={{ cursor: 'pointer' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTag(item);
+                              setPage(1);
+                            }}
+                          >
+                            {item}
+                          </Tag>
+                        ))}
                       </div>
                       <div style={{ marginTop: 10, fontSize: 12, color: 'gray' }}>
-                        👀 {post.viewCount} views • {new Date(post.createdAt).toLocaleDateString()}
+                        {new Date(post.createdAt).toLocaleDateString()} - {post.author}
                       </div>
                     </div>
-                  } 
+                  }
                 />
               </Card>
             </Col>
@@ -113,12 +132,7 @@ const TrangChu = () => {
       </Spin>
 
       <div style={{ textAlign: 'center', marginTop: 30 }}>
-        <Pagination 
-          current={page} 
-          pageSize={9} 
-          total={total} 
-          onChange={(p) => setPage(p)} 
-        />
+        <Pagination current={page} pageSize={9} total={total} onChange={(value) => setPage(value)} />
       </div>
     </Card>
   );
