@@ -240,7 +240,30 @@ const Exercises = () => {
 				</Form>
 			</Modal>
 
-			
+			<Modal
+				footer={null}
+				title={detailItem?.name || 'Chi tiết bài tập'}
+				visible={openDetail}
+				onCancel={() => setOpenDetail(false)}
+			>
+				{detailItem && (
+					<Space direction='vertical' size={12} style={{ width: '100%' }}>
+						<Space wrap>
+							<Tag color='blue'>{detailItem.muscleGroup}</Tag>
+							<Tag color={detailItem.level === 'Dễ' ? 'green' : detailItem.level === 'Trung bình' ? 'gold' : 'red'}>
+								{detailItem.level}
+							</Tag>
+						</Space>
+						<div>{detailItem.description}</div>
+						<div>
+							<strong>Hướng dẫn:</strong> {detailItem.instruction}
+						</div>
+						<div>
+							<strong>Calo đốt trung bình/giờ:</strong> {detailItem.caloriesPerHour}
+						</div>
+					</Space>
+				)}
+			</Modal>
 		</div>
 	);
 };
