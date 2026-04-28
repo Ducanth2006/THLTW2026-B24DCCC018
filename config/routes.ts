@@ -21,8 +21,39 @@
 	{
 		path: '/dashboard',
 		name: 'Dashboard',
-		component: './TrangChu',
+		component: './Fitness/Dashboard',
 		icon: 'HomeOutlined',
+	},
+	{
+		path: '/fitness',
+		name: 'TheoDoiSucKhoe',
+		icon: 'HeartOutlined',
+		routes: [
+			{
+				path: '/fitness',
+				redirect: '/fitness/workouts',
+			},
+			{
+				path: '/fitness/workouts',
+				name: 'NhatKyTapLuyen',
+				component: './Fitness/Workouts',
+			},
+			{
+				path: '/fitness/health',
+				name: 'NhatKySucKhoe',
+				component: './Fitness/Health',
+			},
+			{
+				path: '/fitness/goals',
+				name: 'QuanLyMucTieu',
+				component: './Fitness/Goals',
+			},
+			{
+				path: '/fitness/exercises',
+				name: 'ThuVienBaiTap',
+				component: './Fitness/Exercises',
+			},
+		],
 	},
 	{
 		path: '/gioi-thieu',
