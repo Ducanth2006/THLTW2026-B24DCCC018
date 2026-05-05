@@ -1,5 +1,5 @@
 import type { ChangeEvent, FC } from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Button, Card, Col, Input, Popconfirm, Row, Select, Space, Table, Tag, Tooltip, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
@@ -15,89 +15,70 @@ interface TaskListTabProps {
 type StatusFilter = TaskStatus | 'all';
 type PriorityFilter = TaskPriority | 'all';
 
-const statusLabelMap = {
-	todo: 'Cần làm',
-	inProgress: 'Đang làm',
-	done: 'Hoàn thành',
-};
-
-const statusColorMap = {
-	todo: 'default',
-	inProgress: 'processing',
-	done: 'success',
-};
-
-const priorityLabelMap = {
-	high: 'Cao',
-	medium: 'Trung bình',
-	low: 'Thấp',
-};
-
-const priorityColorMap = {
-	high: 'red',
-	medium: 'gold',
-	low: 'green',
-};
-
-const priorityWeight = {
-	high: 3,
-	medium: 2,
-	low: 1,
-};
-
 const TaskListTab: FC<TaskListTabProps> = ({ tasks, onEdit, onDelete }) => {
 	const [keyword, setKeyword] = useState('');
 	const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 	const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('all');
 
-	const checkMatchKeyword = (task: Task, normalizedKeyword: string) => {
-		if (!normalizedKeyword) {
-			return true;
+	const getStatusText = (status: TaskStatus) => {
+		if (status === 'todo') {
+			return 'Cần làm';
 		}
 
-		if (task.title.toLowerCase().includes(normalizedKeyword)) {
-			return true;
+		if (status === 'inProgress') {
+			return 'Đang làm';
 		}
 
-		if (task.description && task.description.toLowerCase().includes(normalizedKeyword)) {
-			return true;
-		}
-
-		const hasTag = task.tags.some((tag) => tag.toLowerCase().includes(normalizedKeyword));
-		if (hasTag) {
-			return true;
-		}
-
-		return false;
+		return 'Hoàn thành';
 	};
 
-	const checkMatchStatus = (task: Task) => {
-		if (statusFilter === 'all') {
-			return true;
+	const getStatusColor = (status: TaskStatus) => {
+		if (status === 'done') {
+			return 'success';
 		}
 
-		return task.status === statusFilter;
-	};
-
-	const checkMatchPriority = (task: Task) => {
-		if (priorityFilter === 'all') {
-			return true;
+		if (status === 'inProgress') {
+			return 'processing';
 		}
 
-		return task.priority === priorityFilter;
+		return 'default';
 	};
 
-	const filteredTasks = useMemo(() => {
-		const normalizedKeyword = keyword.trim().toLowerCase();
+	const getPriorityText = (priority: TaskPriority) => {
+		if (priority === 'high') {
+			return 'Cao';
+		}
 
-		return tasks.filter((task) => {
-			const matchKeyword = checkMatchKeyword(task, normalizedKeyword);
-			const matchStatus = checkMatchStatus(task);
-			const matchPriority = checkMatchPriority(task);
+		if (priority === 'medium') {
+			return 'Trung bình';
+		}
 
-			return matchKeyword && matchStatus && matchPriority;
-		});
-	}, [keyword, priorityFilter, statusFilter, tasks]);
+		return 'Thấp';
+	};
+
+	const getPriorityColor = (priority: TaskPriority) => {
+		if (priority === 'high') {
+			return 'red';
+		}
+
+		if (priority === 'medium') {
+			return 'gold';
+		}
+
+		return 'green';
+	};
+
+	const getPriorityPoint = (priority: TaskPriority) => {
+		if (priority === 'high') {
+			return 3;
+		}
+
+		if (priority === 'medium') {
+			return 2;
+		}
+
+		return 1;
+	};
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setKeyword(event.target.value);
@@ -111,41 +92,88 @@ const TaskListTab: FC<TaskListTabProps> = ({ tasks, onEdit, onDelete }) => {
 		setPriorityFilter(value);
 	};
 
+	const isMatchKeyword = (task: Task) => {
+		const textSearch = keyword.trim().toLowerCase();
+
+		if (textSearch === '') {
+			return true;
+		}
+
+		if (task.title.toLowerCase().includes(textSearch)) {
+			return true;
+		}
+
+		if (task.description && task.description.toLowerCase().includes(textSearch)) {
+			return true;
+		}
+
+		for (let i = 0; i < task.tags.length; i += 1) {
+			if (task.tags[i].toLowerCase().includes(textSearch)) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+	const isMatchFilter = (task: Task) => {
+		if (statusFilter !== 'all' && task.status !== statusFilter) {
+			return false;
+		}
+
+		if (priorityFilter !== 'all' && task.priority !== priorityFilter) {
+			return false;
+		}
+
+		return true;
+	};
+
+	const getFilteredTasks = () => {
+		const result: Task[] = [];
+
+		tasks.forEach((task) => {
+			if (isMatchKeyword(task) && isMatchFilter(task)) {
+				result.push(task);
+			}
+		});
+
+		return result;
+	};
+
 	const renderTaskInfo = (_value: string, task: Task) => {
 		return (
 			<Space direction='vertical' size={4}>
 				<Typography.Text strong>{task.title}</Typography.Text>
-				{task.description && (
+				{task.description ? (
 					<Typography.Text type='secondary' ellipsis style={{ maxWidth: 420 }}>
 						{task.description}
 					</Typography.Text>
-				)}
+				) : null}
 			</Space>
 		);
 	};
 
 	const renderStatus = (status: TaskStatus) => {
-		return <Tag color={statusColorMap[status]}>{statusLabelMap[status]}</Tag>;
+		return <Tag color={getStatusColor(status)}>{getStatusText(status)}</Tag>;
 	};
 
 	const renderPriority = (priority: TaskPriority) => {
-		return <Tag color={priorityColorMap[priority]}>{priorityLabelMap[priority]}</Tag>;
+		return <Tag color={getPriorityColor(priority)}>{getPriorityText(priority)}</Tag>;
 	};
 
 	const renderDeadline = (deadline: string, task: Task) => {
 		const isOverdue = task.status !== 'done' && moment(deadline).isBefore(moment(), 'day');
-		let textType: 'danger' | undefined;
 
 		if (isOverdue) {
-			textType = 'danger';
+			return (
+				<Space direction='vertical' size={0}>
+					<Typography.Text type='danger'>{moment(deadline).format('DD/MM/YYYY')}</Typography.Text>
+					<Typography.Text type='danger'>Quá hạn</Typography.Text>
+				</Space>
+			);
 		}
 
-		return (
-			<Space direction='vertical' size={0}>
-				<Typography.Text type={textType}>{moment(deadline).format('DD/MM/YYYY')}</Typography.Text>
-				{isOverdue && <Typography.Text type='danger'>Quá hạn</Typography.Text>}
-			</Space>
-		);
+		return <Typography.Text>{moment(deadline).format('DD/MM/YYYY')}</Typography.Text>;
 	};
 
 	const renderTags = (tags: string[]) => {
@@ -163,24 +191,24 @@ const TaskListTab: FC<TaskListTabProps> = ({ tasks, onEdit, onDelete }) => {
 	};
 
 	const renderActions = (_value: unknown, task: Task) => {
-		const handleEditClick = () => {
+		const editThisTask = () => {
 			onEdit(task);
 		};
 
-		const handleConfirmDelete = () => {
+		const deleteThisTask = () => {
 			onDelete(task.id);
 		};
 
 		return (
 			<Space>
 				<Tooltip title='Chỉnh sửa'>
-					<Button type='text' icon={<EditOutlined />} onClick={handleEditClick} />
+					<Button type='text' icon={<EditOutlined />} onClick={editThisTask} />
 				</Tooltip>
 				<Popconfirm
 					title='Bạn có chắc chắn muốn xóa công việc này?'
 					okText='Xóa'
 					cancelText='Hủy'
-					onConfirm={handleConfirmDelete}
+					onConfirm={deleteThisTask}
 				>
 					<Tooltip title='Xóa'>
 						<Button danger type='text' icon={<DeleteOutlined />} />
@@ -219,7 +247,7 @@ const TaskListTab: FC<TaskListTabProps> = ({ tasks, onEdit, onDelete }) => {
 				{ text: 'Thấp', value: 'low' },
 			],
 			onFilter: (value, task) => task.priority === value,
-			sorter: (firstTask, secondTask) => priorityWeight[firstTask.priority] - priorityWeight[secondTask.priority],
+			sorter: (firstTask, secondTask) => getPriorityPoint(firstTask.priority) - getPriorityPoint(secondTask.priority),
 			render: renderPriority,
 		},
 		{
@@ -241,6 +269,8 @@ const TaskListTab: FC<TaskListTabProps> = ({ tasks, onEdit, onDelete }) => {
 			render: renderActions,
 		},
 	];
+
+	const filteredTasks = getFilteredTasks();
 
 	return (
 		<Card
